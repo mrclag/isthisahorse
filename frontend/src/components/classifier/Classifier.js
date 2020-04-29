@@ -1,12 +1,65 @@
 import React, { Component } from 'react';
+import { Spinner, Button } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import './Classifier.css';
+import axios from 'axios';
 
 class Classifier extends Component {
-  state = { files: [] };
+  state = { files: [], isLoading: false };
+
+  // componentDidMount() {
+  //   this.getImages();
+  // }
+
+  // getImages = () => {
+  //   axios
+  //     .get('http://localhost:8000/api/images/', {
+  //       headers: {
+  //         accept: 'application/json',
+  //       },
+  //     })
+  //     .then((res) => {
+  //       console.log(res);
+  //     });
+  // };
 
   onDrop = (files) => {
-    this.setState({ files });
+    this.setState({
+      isLoading: true,
+    });
+    this.loadImage(files);
+  };
+
+  loadImage = (files) => {
+    setTimeout(() => {
+      this.setState(
+        {
+          files,
+          isLoading: false,
+        },
+        () => {
+          console.log(this.state.files);
+        }
+      );
+    }, 500);
+  };
+
+  sendImage = () => {
+    let formData = new FormData();
+    formData.append('picture', this.state.files[0], this.state.files[0].name);
+    axios
+      .post('http://localhost:8000/api/images/', formData, {
+        headers: {
+          accept: 'application/json',
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -17,21 +70,38 @@ class Classifier extends Component {
     ));
 
     return (
-      <Dropzone onDrop={this.onDrop} accept="img/png">
+      <Dropzone onDrop={this.onDrop} accept="image/png, image/jpeg">
         {({ isDragActive, getRootProps, getInputProps }) => (
           <section className="container">
             <div {...getRootProps({ className: 'dropzone back' })}>
               <input {...getInputProps()} />
-              <p>
+              <i
+                className="far fa-image mb-2 text-muted"
+                style={{ fontSize: 100 }}
+              ></i>
+              <p className="text-muted">
                 {isDragActive
                   ? 'Drop some images'
                   : `Drag 'n' drop some files here, or click to select files`}
               </p>
             </div>
-            <aside>
-              <h4>Files</h4>
-              <ul>{files}</ul>
-            </aside>
+            <aside>{files}</aside>
+            {this.state.files.length > 0 && (
+              <Button
+                onClick={this.sendImage}
+                variant="info"
+                size="lg"
+                className="mt-3"
+              >
+                Select Image
+              </Button>
+            )}
+
+            {this.state.isLoading && (
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            )}
           </section>
         )}
       </Dropzone>
