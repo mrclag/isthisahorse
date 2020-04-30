@@ -46,7 +46,6 @@ class ImageList extends Component {
 
     return (
       <>
-        <h1>Image List Here</h1>
         {this.state.isLoading ? (
           <Spinner animation="border" role="status"></Spinner>
         ) : (
@@ -63,7 +62,7 @@ class ImageList extends Component {
               this.state.images.length > 2 && (
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="lg mb-5"
                   onClick={this.handleVisible}
                 >
                   Load More
