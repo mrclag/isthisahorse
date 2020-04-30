@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Spinner, Button } from 'react-bootstrap';
+import { Spinner, Button, Alert, Image } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import './Classifier.css';
 import axios from 'axios';
@@ -11,25 +11,13 @@ class Classifier extends Component {
     recentImage: null,
   };
 
-  // componentDidMount() {
-  //   this.getImages();
-  // }
 
-  // getImages = () => {
-  //   axios
-  //     .get('http://localhost:8000/api/images/', {
-  //       headers: {
-  //         accept: 'application/json',
-  //       },
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //     });
-  // };
 
   onDrop = (files) => {
     this.setState({
+      files: [],
       isLoading: true,
+      recentImage: null,
     });
     this.loadImage(files);
   };
@@ -132,6 +120,19 @@ class Classifier extends Component {
               <Spinner animation="border" role="status">
                 <span className="sr-only">Loading...</span>
               </Spinner>
+            )}
+            {this.state.recentImage && (
+              <>
+                <Alert variant="primary">
+                  {this.state.recentImage.data.classified}
+                </Alert>
+                <Image
+                  className="justify-content-center"
+                  src={this.state.recentImage.data.picture}
+                  height="200"
+                  rounded
+                />
+              </>
             )}
           </section>
         )}
