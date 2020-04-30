@@ -5,7 +5,11 @@ import './Classifier.css';
 import axios from 'axios';
 
 class Classifier extends Component {
-  state = { files: [], isLoading: false };
+  state = {
+    files: [],
+    isLoading: false,
+    recentImage: null,
+  };
 
   // componentDidMount() {
   //   this.getImages();
@@ -44,7 +48,16 @@ class Classifier extends Component {
     }, 500);
   };
 
+  activateSpinner = () => {
+    this.setState({ isLoading: true, files: [] });
+  };
+
+  deactivateSpinner = () => {
+    this.setState({ isLoading: false });
+  };
+
   sendImage = () => {
+    this.activateSpinner();
     let formData = new FormData();
     formData.append('picture', this.state.files[0], this.state.files[0].name);
     axios
@@ -55,11 +68,29 @@ class Classifier extends Component {
         },
       })
       .then((res) => {
-        console.log(res);
+        this.getImageClass(res);
+        console.log(res.data.id);
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  getImageClass = (obj) => {
+    axios
+      .get(`http://localhost:8000/api/images/${obj.data.id}/`, {
+        headers: {
+          accept: 'application/json',
+        },
+      })
+      .then((res) => {
+        this.setState({ recentImage: res });
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.deactivateSpinner();
   };
 
   render() {
