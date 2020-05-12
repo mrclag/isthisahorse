@@ -12,3 +12,19 @@
 .back:hover {
   border: 3px dashed deepskyblue;
 }
+
+.dropzone {
+  width: min(500px, 80vw);
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.result-box {
+  height: 100px;
+  width: min(600px, 8-0vw);
+  font-size: 35px;
+  font-weight: bold;
+  text-align: center;
+  margin: auto;
+  margin-top: 20px;
+}

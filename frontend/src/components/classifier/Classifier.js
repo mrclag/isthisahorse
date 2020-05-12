@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Spinner, Button, Alert, Image } from 'react-bootstrap';
+import { Spinner, Button, Image } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import './Classifier.css';
 import axios from 'axios';
@@ -10,8 +10,6 @@ class Classifier extends Component {
     isLoading: false,
     recentImage: null,
   };
-
-
 
   onDrop = (files) => {
     this.setState({
@@ -89,7 +87,11 @@ class Classifier extends Component {
     ));
 
     return (
-      <Dropzone onDrop={this.onDrop} accept="image/png, image/jpeg">
+      <Dropzone
+        onDrop={this.onDrop}
+        accept="image/png, image/jpeg"
+        className="dropzone"
+      >
         {({ isDragActive, getRootProps, getInputProps }) => (
           <section className="container">
             <div {...getRootProps({ className: 'dropzone back' })}>
@@ -101,7 +103,7 @@ class Classifier extends Component {
               <p className="text-muted">
                 {isDragActive
                   ? 'Drop some images'
-                  : `Drag 'n' drop some files here, or click to select files`}
+                  : `Drag files here, or click to select files`}
               </p>
             </div>
             <aside>{files}</aside>
@@ -123,9 +125,12 @@ class Classifier extends Component {
             )}
             {this.state.recentImage && (
               <>
-                <Alert variant="primary">
-                  {this.state.recentImage.data.classified}
-                </Alert>
+                <div className="result-box">
+                  {this.state.recentImage.data.classified === 'sorrel'
+                    ? 'Of course its a horse'
+                    : 'Nay'}
+                </div>
+                Wow
                 <Image
                   className="justify-content-center"
                   src={this.state.recentImage.data.picture}
