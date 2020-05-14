@@ -1,3 +1,5 @@
 env
 media_root
 media_root/
+app.yaml
+settings_env.py

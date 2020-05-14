@@ -23,7 +23,8 @@ class Image(models.Model):
             prediction = model.predict(prep)
             decoded = decode_predictions(prediction)[0][0][1]
             self.classified = str(decoded)
-            print('Classification success')
+
+            print('Classification success: ', self.classified)
         except Exception as e:
             print('classification failed', e)
         

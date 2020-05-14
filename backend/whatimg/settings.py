@@ -20,17 +20,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '31-wgn56$6p%a1q78rb#2fne4$%h7)@u(065c)=lq+_+od)-n5'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # development
+# DEBUG = os.environ['DEBUG'] == 'True'  # production 
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['127.0.0.1', 'isthisahorse-backend.appspot.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'isthisahorse-backend'  # only in production
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,11 +47,25 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000"
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:3000"
+# ]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,10 +73,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'whatimg.urls'
+# ROOT_URLCONF = 'whatimg.urls'  # development
+ROOT_URLCONF = 'whatimg.urls' # ROOT-PROJECT-DIRECTORY is the directory where this settings.py file is
+WSGI_APPLICATION = 'whatimg.wsgi.application'
+
 
 TEMPLATES = [
     {
@@ -83,10 +102,23 @@ WSGI_APPLICATION = 'whatimg.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+## DEVELOPMENT DB
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+## PRODUCTION DB
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+      'ENGINE': 'django.db.backends.postgresql',
+      'HOST': os.environ['DB_HOST'],
+      'PORT': os.environ['DB_PORT'],
+      'NAME': os.environ['DB_NAME'],
+      'USER': os.environ['DB_USER'],
+      'PASSWORD': os.environ['DB_PASSWORD']
     }
 }
 
@@ -127,8 +159,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = os.environ['STATIC_URL'] or '/static/'
 
+# collectstatic directory (located OUTSIDE the base directory)
+# TODO: configure the name and path to your static bucket directory (where collectstatic will copy to)
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'STATIC-BUCKET-NAME')
 
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_root')
 MEDIA_URL = '/media/'
+
+STATICFILES_DIRS = [
+  # TODO: configure the name and path to your development static directory
+    os.path.join(BASE_DIR, 'static'), # static directory (in the top level directory) for local testing
+]
