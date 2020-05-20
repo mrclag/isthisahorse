@@ -27,13 +27,13 @@ DEBUG = True  # development
 # DEBUG = os.environ['DEBUG'] == 'True'  # production 
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'isthisahorse-backend.appspot.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'isthisahorse-backend.appspot.com', 'isthisahorse-backend.wl.r.appspot.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'isthisahorse-backend'  # only in production
+    'whatimg',  # only in production
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -163,7 +163,7 @@ STATIC_URL = os.environ['STATIC_URL'] or '/static/'
 
 # collectstatic directory (located OUTSIDE the base directory)
 # TODO: configure the name and path to your static bucket directory (where collectstatic will copy to)
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'STATIC-BUCKET-NAME')
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'isthisahorse-static')
 
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_root')
 MEDIA_URL = '/media/'
